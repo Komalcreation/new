@@ -1,0 +1,6 @@
+{
+  "name": "KCTC Admin & Academy",
+  "description": "The premium administration panel and student portal for Komal Creations & Training Center, integrated with a live certificate verification ledger, stitching estimator, and inquiry workflow.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
