@@ -1306,12 +1306,12 @@ export default function AdminPanel({
       {/* --- ADD NEW STUDENT MANUALLY DIALOG-MODAL --- */}
       <AnimatePresence>
         {showAddStudentModal && (
-          <div className="fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white border text-xs text-slate-600 rounded-xl shadow-xl p-6 w-full max-w-lg relative"
+              className="bg-white border text-xs text-slate-600 rounded-xl shadow-xl p-6 w-full max-w-lg relative my-auto md:my-8"
             >
               <button 
                 onClick={() => setShowAddStudentModal(false)}
@@ -1509,12 +1509,12 @@ export default function AdminPanel({
       {/* --- EDIT STUDENT DIALOG-MODAL --- */}
       <AnimatePresence>
         {editingStudent && (
-          <div className="fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white border text-xs text-slate-600 rounded-xl shadow-xl p-6 w-full max-w-lg relative"
+              className="bg-white border text-xs text-slate-600 rounded-xl shadow-xl p-6 w-full max-w-lg relative my-auto md:my-8"
             >
               <button 
                 onClick={() => setEditingStudent(null)}
@@ -1700,12 +1700,12 @@ export default function AdminPanel({
       {/* --- CONFIRM STUDENTS DELETE DIALOG MODAL --- */}
       <AnimatePresence>
         {studentToDelete && (
-          <div className="fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white border p-6 rounded-xl shadow-xl max-w-sm w-full text-xs text-slate-600"
+              className="bg-white border p-6 rounded-xl shadow-xl max-w-sm w-full text-xs text-slate-600 my-auto md:my-8"
             >
               <h3 className="font-serif font-bold text-lg text-slate-900 mb-2">Revoke Student enrollment?</h3>
               <p className="leading-relaxed mb-6">

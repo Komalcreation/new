@@ -1309,12 +1309,12 @@ export default function PublicSite({
       {/* --- STUDENT AUTH MODAL & PROFILE SHEET --- */}
       <AnimatePresence>
         {showAuthModal && (
-          <div className="fixed inset-0 bg-[#120a0f]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-[#120a0f]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="bg-[#fdfbf7] border border-[#501537]/10 w-full max-w-lg rounded-2xl shadow-2xl p-6 relative"
+              className="bg-[#fdfbf7] border border-[#501537]/10 w-full max-w-lg rounded-2xl shadow-2xl p-6 relative my-auto md:my-8"
             >
               <button 
                 onClick={() => setShowAuthModal(false)}
@@ -1650,12 +1650,12 @@ export default function PublicSite({
       {/* --- SCANNED CERTIFICATE DETAIL MODAL --- */}
       <AnimatePresence>
         {showCertificateModal && verifiedCertificate && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-xl overflow-hidden shadow-2xl max-w-lg w-full relative"
+              className="bg-white rounded-xl overflow-hidden shadow-2xl max-w-lg w-full relative my-auto md:my-8"
             >
               <button 
                 onClick={() => setShowCertificateModal(false)}
