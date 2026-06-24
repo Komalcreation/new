@@ -38,7 +38,7 @@ import {
   SleeveType, 
   EstimatorSummary 
 } from '../types';
-import { supabase } from '../supabase';
+import { supabase, generateUUID } from '../supabase';
 
 interface PublicSiteProps {
   students: Student[];
@@ -126,6 +126,31 @@ export default function PublicSite({
 }: PublicSiteProps) {
   // Navigation active tab
   const [activeNav, setActiveNav] = useState('home');
+
+  // Smooth scroll handler for anchor links
+  const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    if (id === 'home') {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      setActiveNav('home');
+      return;
+    }
+    const element = document.getElementById(id);
+    if (element) {
+      const headerOffset = 90; // offset for the fixed header
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      setActiveNav(id);
+    }
+  };
 
   // Filter Boutique
   const [activeFilter, setActiveFilter] = useState('all');
@@ -424,7 +449,7 @@ export default function PublicSite({
     } else {
       // Capture registration as inquiry and log them in
       onStudentLogin({
-        id: 'student_' + Math.random().toString(36).substr(2, 9),
+        id: generateUUID(),
         ...regPayload
       });
     }
@@ -512,9 +537,9 @@ export default function PublicSite({
       <div className="absolute top-[40%] left-[-100px] w-[500px] h-[500px] bg-gradient-to-r from-[#501537]/5 to-transparent blur-[100px] pointer-events-none -z-10" />
 
       {/* --- PUBLIC SITE NAVIGATION HEADER --- */}
-      <header className="sticky top-0 z-50 bg-[#fdfbf7]/80 backdrop-blur-md border-b border-[#501537]/10 py-4 shadow-sm transition-all duration-300">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#fdfbf7]/90 backdrop-blur-md border-b border-[#501537]/10 py-4 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <a href="#" className="flex items-center gap-3 group">
+          <a href="#" onClick={(e) => handleScrollToSection(e, 'home')} className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#501537] to-[#c5a059] text-white flex items-center justify-content justify-center font-serif font-bold text-lg shadow-md group-hover:scale-105 transition-all">
               K
             </div>
@@ -526,60 +551,62 @@ export default function PublicSite({
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-[#5a4b53]">
-            <a href="#home" onClick={() => setActiveNav('home')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'home' ? 'text-[#501537] font-semibold' : ''}`}>
+            <a href="#home" onClick={(e) => handleScrollToSection(e, 'home')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'home' ? 'text-[#501537] font-semibold' : ''}`}>
               Home
               {activeNav === 'home' && <span className="absolute bottom-[-18px] left-0 w-full h-[3px] bg-[#c5a059] rounded-t-full" />}
             </a>
-            <a href="#creations" onClick={() => setActiveNav('creations')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'creations' ? 'text-[#501537] font-semibold' : ''}`}>
+            <a href="#creations" onClick={(e) => handleScrollToSection(e, 'creations')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'creations' ? 'text-[#501537] font-semibold' : ''}`}>
               Creations
               {activeNav === 'creations' && <span className="absolute bottom-[-18px] left-0 w-full h-[3px] bg-[#c5a059] rounded-t-full" />}
             </a>
-            <a href="#courses" onClick={() => setActiveNav('courses')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'courses' ? 'text-[#501537] font-semibold' : ''}`}>
+            <a href="#courses" onClick={(e) => handleScrollToSection(e, 'courses')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'courses' ? 'text-[#501537] font-semibold' : ''}`}>
               Courses
               {activeNav === 'courses' && <span className="absolute bottom-[-18px] left-0 w-full h-[3px] bg-[#c5a059] rounded-t-full" />}
             </a>
-            <a href="#estimator" onClick={() => setActiveNav('estimator')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'estimator' ? 'text-[#501537] font-semibold' : ''}`}>
+            <a href="#estimator" onClick={(e) => handleScrollToSection(e, 'estimator')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'estimator' ? 'text-[#501537] font-semibold' : ''}`}>
               Estimator
               {activeNav === 'estimator' && <span className="absolute bottom-[-18px] left-0 w-full h-[3px] bg-[#c5a059] rounded-t-full" />}
             </a>
-            <a href="#verification" onClick={() => setActiveNav('verification')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'verification' ? 'text-[#501537] font-semibold' : ''}`}>
+            <a href="#verification" onClick={(e) => handleScrollToSection(e, 'verification')} className={`hover:text-[#501537] transition-colors relative ${activeNav === 'verification' ? 'text-[#501537] font-semibold' : ''}`}>
               Verification Ledger
               {activeNav === 'verification' && <span className="absolute bottom-[-18px] left-0 w-full h-[3px] bg-[#c5a059] rounded-t-full" />}
             </a>
           </nav>
 
-          {/* User controls */}
-          <div className="flex items-center gap-3">
-            {currentSession ? (
-              <button 
-                onClick={() => setShowAuthModal(true)}
-                className="px-4 py-2 border border-[#c5a059] rounded-lg text-xs font-semibold text-[#501537] hover:bg-[#c5a059]/10 transition-colors flex items-center gap-2"
-              >
-                <GraduationCap className="w-4 h-4 text-[#c5a059]" />
-                <span>Hi, {currentSession.full_name.split(' ')[0]}</span>
-              </button>
-            ) : (
-              <button 
-                onClick={() => { setAuthTab('login'); setShowAuthModal(true); }}
-                className="px-4 py-2 border border-[#c5a059] rounded-lg text-xs font-semibold text-[#501537] hover:bg-[#c5a059]/10 transition-colors flex items-center gap-2"
-              >
-                <User className="w-3.5 h-3.5 text-[#c5a059]" />
-                <span>Student Portal</span>
-              </button>
-            )}
+            {/* User controls */}
+            <div className="flex items-center gap-3">
+              {currentSession ? (
+                <button 
+                  onClick={() => setShowAuthModal(true)}
+                  className="px-4 py-2 border border-[#c5a059] rounded-lg text-xs font-semibold text-[#501537] hover:bg-[#c5a059]/10 transition-colors flex items-center gap-2"
+                >
+                  <GraduationCap className="w-4 h-4 text-[#c5a059]" />
+                  <span>Hi, {currentSession.full_name.split(' ')[0]}</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => { setAuthTab('login'); setShowAuthModal(true); }}
+                  className="px-4 py-2 border border-[#c5a059] rounded-lg text-xs font-semibold text-[#501537] hover:bg-[#c5a059]/10 transition-colors flex items-center gap-2"
+                >
+                  <User className="w-3.5 h-3.5 text-[#c5a059]" />
+                  <span>Student Portal</span>
+                </button>
+              )}
 
-            <button 
-              onClick={onToggleAdmin}
-              className="px-4 py-2 bg-gradient-to-r from-[#501537] to-[#7c2658] rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg hover:scale-103 transition-all"
-            >
-              Admin Portal
-            </button>
-          </div>
+              {!currentSession && (
+                <button 
+                  onClick={onToggleAdmin}
+                  className="px-4 py-2 bg-gradient-to-r from-[#501537] to-[#7c2658] rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg hover:scale-103 transition-all"
+                >
+                  Admin Portal
+                </button>
+              )}
+            </div>
         </div>
       </header>
 
       {/* --- HERO SECTION --- */}
-      <section id="home" className="max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-template-columns md:grid-cols-2 gap-12 items-center">
+      <section id="home" className="max-w-7xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-24 grid md:grid-template-columns md:grid-cols-2 gap-12 items-center">
         <motion.div 
           initial={{ opacity: 0, x: -30 }} 
           animate={{ opacity: 1, x: 0 }} 
@@ -600,10 +627,18 @@ export default function PublicSite({
           </p>
 
           <div className="flex flex-wrap gap-4 pt-2">
-            <a href="#creations" className="px-6 py-3 bg-[#501537] text-white hover:bg-[#7c2658] font-semibold text-sm rounded-xl shadow-md transition-all">
+            <a 
+              href="#creations" 
+              onClick={(e) => handleScrollToSection(e, 'creations')}
+              className="px-6 py-3 bg-[#501537] text-white hover:bg-[#7c2658] font-semibold text-sm rounded-xl shadow-md transition-all"
+            >
               Explore Creations
             </a>
-            <a href="#courses" className="px-6 py-3 border-2 border-[#c5a059] text-[#501537] hover:bg-[#c5a059] hover:text-white font-semibold text-sm rounded-xl transition-all">
+            <a 
+              href="#courses" 
+              onClick={(e) => handleScrollToSection(e, 'courses')}
+              className="px-6 py-3 border-2 border-[#c5a059] text-[#501537] hover:bg-[#c5a059] hover:text-white font-semibold text-sm rounded-xl transition-all"
+            >
               Join Our Academy
             </a>
           </div>
@@ -1309,125 +1344,218 @@ export default function PublicSite({
       {/* --- STUDENT AUTH MODAL & PROFILE SHEET --- */}
       <AnimatePresence>
         {showAuthModal && (
-          <div className="fixed inset-0 bg-[#120a0f]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className={`fixed inset-0 bg-[#120a0f]/60 backdrop-blur-sm z-50 flex ${currentSession ? 'items-stretch justify-stretch p-0 md:p-6' : 'items-center justify-center p-4'} overflow-y-auto`}>
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="bg-[#fdfbf7] border border-[#501537]/10 w-full max-w-lg rounded-2xl shadow-2xl p-6 relative my-auto md:my-8"
+              className={`bg-[#fdfbf7] border border-[#501537]/10 w-full ${
+                currentSession 
+                  ? 'min-h-screen md:min-h-0 md:rounded-3xl shadow-2xl flex flex-col p-6 md:p-10 max-w-7xl mx-auto my-0 md:my-4' 
+                  : 'max-w-lg rounded-2xl shadow-2xl p-6 relative my-auto md:my-8'
+              }`}
             >
-              <button 
-                onClick={() => setShowAuthModal(false)}
-                className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-[#501537] rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              {!currentSession && (
+                <button 
+                  onClick={() => setShowAuthModal(false)}
+                  className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-[#501537] rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
 
               {/* Logged in display */}
               {currentSession ? (
-                <div>
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 rounded-full bg-[#c5a059]/10 text-[#c5a059] flex items-center justify-center mx-auto mb-3">
-                      <GraduationCap className="w-8 h-8" />
+                <div className="flex flex-col h-full w-full">
+                  {/* Top Header */}
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#501537]/10 pb-5 mb-6 gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Scissors className="w-5 h-5 text-[#c5a059]" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#c5a059] font-sans">Komal Stitching Training Center</span>
+                      </div>
+                      <h3 className="font-serif font-black text-2xl md:text-3xl text-[#501537]">Student Dashboard Portal</h3>
                     </div>
-                    <h3 className="font-serif font-bold text-2xl text-[#501537]" id="welcome-text">Student Profile Desk</h3>
-                    <p className="text-xs text-[#5a4b53] mt-1">{currentSession.email}</p>
-                    
-                    <span className={`inline-block mt-2.5 px-3 py-1 text-[10px] uppercase tracking-wider font-bold rounded-full border ${
-                      currentSession.enrollment_status === 'accepted'
-                        ? 'bg-emerald-50 text-[#2b704e] border-emerald-200' 
-                        : currentSession.enrollment_status === 'declined'
-                        ? 'bg-red-50 text-red-650 border-red-200'
-                        : 'bg-amber-50 text-amber-600 border-amber-200'
-                    }`}>
-                      {currentSession.enrollment_status === 'accepted' ? 'Admitted & Enrolled' :
-                       currentSession.enrollment_status === 'declined' ? 'Enrollment Declined' : 'Admission Pending Review'}
-                    </span>
-                  </div>
-
-                  <div className="bg-[#f6f0ea]/50 border border-[#501537]/10 p-5 rounded-xl text-xs space-y-4 text-left font-medium text-[#5a4b53]">
-                    <h4 className="font-bold text-[#c5a059] text-[10px] uppercase tracking-widest border-b border-[#501537]/10 pb-1.5 mb-2.5 font-sans">Academic & Profile Details</h4>
-                    
-                    <div className="grid grid-cols-2 gap-3 text-[11px]">
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase">Student Name</span>
-                        <span className="text-[#501537] font-bold">{currentSession.full_name}</span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase">Father Name</span>
-                        <span className="text-[#501537] font-semibold">{currentSession.father_name}</span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase font-sans">Date of Birth</span>
-                        <span className="text-[#501537] font-semibold">{currentSession.dob || '—'}</span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase font-sans">Gender</span>
-                        <span className="text-[#501537] font-semibold">{currentSession.gender || 'Female'}</span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase font-sans">Academic Qualification</span>
-                        <span className="text-[#501537] font-semibold">{currentSession.qualification || '—'}</span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase">Residence</span>
-                        <span className="text-[#501537] font-semibold">{currentSession.residence}</span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase">Contact Phone</span>
-                        <span className="text-[#501537] font-semibold">{currentSession.phone}</span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-400 font-bold text-[9px] mb-0.5 uppercase">Enrolled Course</span>
-                        <span className="text-[#501537] font-semibold block truncate" title={currentSession.enrolled_course}>
-                          {currentSession.enrolled_course}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                      <button 
+                        onClick={onStudentLogout}
+                        className="px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 text-[#b03a2e] rounded-xl text-xs font-bold uppercase transition-all"
+                      >
+                        Log Out Account
+                      </button>
+                      <button 
+                        onClick={() => setShowAuthModal(false)}
+                        className="px-4 py-2 bg-[#501537] hover:bg-[#7c2658] text-white rounded-xl text-xs font-bold uppercase transition-all flex items-center gap-1.5"
+                      >
+                        <X className="w-4 h-4" />
+                        <span>Return to Website</span>
+                      </button>
                     </div>
                   </div>
 
-                  {/* Real-time Enrollment Status Track */}
-                  <div className="mt-4 p-4 rounded-xl border border-dashed border-[#501537]/10 text-left flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
-                      <GraduationCap className="w-4 h-4 text-[#c5a059]" />
-                      <span>Admission Enrollment Status</span>
+                  {/* Main Dashboard Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start overflow-y-auto max-h-[75vh] pr-1">
+                    {/* Left Column: Profile Card & Admission Status (lg:span-5) */}
+                    <div className="lg:col-span-5 flex flex-col gap-6">
+                      {/* Personal Welcome Card */}
+                      <div className="p-6 bg-gradient-to-br from-[#501537] to-[#7c2658] text-white rounded-2xl shadow-md relative overflow-hidden">
+                        <div className="absolute right-[-20px] bottom-[-20px] opacity-10">
+                          <GraduationCap className="w-48 h-48" />
+                        </div>
+                        <div className="flex items-center gap-4 relative z-10">
+                          <div className="w-16 h-16 rounded-full bg-white/15 text-white border border-white/25 flex items-center justify-center font-serif font-bold text-2xl shrink-0">
+                            {currentSession.full_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                          </div>
+                          <div>
+                            <span className="text-[10px] uppercase font-bold tracking-widest text-[#c5a059]">Welcome back</span>
+                            <h4 className="text-xl font-bold font-serif leading-tight">{currentSession.full_name}</h4>
+                            <p className="text-xs text-pink-100/85 mt-0.5">{currentSession.email}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Admission/Enrollment Status */}
+                      <div className="p-6 bg-white border border-[#501537]/10 rounded-2xl shadow-sm">
+                        <h4 className="font-bold text-[#c5a059] text-[10px] uppercase tracking-widest border-b border-[#501537]/5 pb-2.5 mb-4 flex items-center gap-1.5">
+                          <GraduationCap className="w-4 h-4" />
+                          <span>Admission Status Tracker</span>
+                        </h4>
+
+                        <div className="flex flex-col gap-3">
+                          <span className={`inline-flex items-center gap-1.5 w-fit px-3 py-1.5 text-[10px] uppercase tracking-wider font-bold rounded-full border ${
+                            currentSession.enrollment_status === 'accepted'
+                              ? 'bg-emerald-50 text-[#2b704e] border-emerald-200' 
+                              : currentSession.enrollment_status === 'declined'
+                              ? 'bg-red-50 text-red-650 border-red-200'
+                              : 'bg-amber-50 text-amber-600 border-amber-200'
+                          }`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
+                            {currentSession.enrollment_status === 'accepted' ? 'Admitted & Enrolled' :
+                             currentSession.enrollment_status === 'declined' ? 'Enrollment Declined' : 'Admission Pending Review'}
+                          </span>
+
+                          {(!currentSession.enrollment_status || currentSession.enrollment_status === 'pending') && (
+                            <div className="bg-amber-50/70 border border-amber-200/50 text-amber-800 p-4 rounded-xl text-xs leading-relaxed">
+                              <strong className="block text-amber-900 font-bold mb-1.5 uppercase text-[10px] tracking-wide">Pending Review</strong>
+                              Your application is successfully registered. The administrator is currently reviewing your eligibility parameters (DOB, Qualification) and seat capacity for this batch. You can close this view and return at any time.
+                            </div>
+                          )}
+
+                          {currentSession.enrollment_status === 'accepted' && (
+                            <div className="bg-emerald-50/70 border border-emerald-200/50 text-emerald-800 p-4 rounded-xl text-xs leading-relaxed">
+                              <strong className="block text-emerald-900 font-bold mb-1.5 uppercase text-[10px] tracking-wide font-sans">Approved & Confirmed</strong>
+                              Congratulations! Your seat has been officially locked and confirmed. Welcome to the upcoming batch. Please report to the training center to initialize physical course material Hand-outs.
+                            </div>
+                          )}
+
+                          {currentSession.enrollment_status === 'declined' && (
+                            <div className="bg-red-50/70 border border-red-200/50 text-red-800 p-4 rounded-xl text-xs leading-relaxed">
+                              <strong className="block text-red-900 font-bold mb-1.5 uppercase text-[10px] tracking-wide">Application Declined</strong>
+                              Sorry, your application registration was not accepted. This may be due to seat limits or validation errors. Please visit the help desk or submit another request.
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
-                    {(!currentSession.enrollment_status || currentSession.enrollment_status === 'pending') && (
-                      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3.5 rounded-lg text-[11px] leading-relaxed">
-                        <strong className="block text-amber-900 font-bold mb-1 uppercase text-xs">● Status: Pending Administrator Review</strong>
-                        Your application is safe and successfully registered! The Komal Stitching Training Center administrator is currently reviewing your profile parameters (DOB, Gender, Qualification) and program slot availability. You can sign out and log back in at any time to monitor your approval status.
-                      </div>
-                    )}
+                    {/* Right Column: Detailed Profile, Course, & Fees Ledger (lg:span-7) */}
+                    <div className="lg:col-span-7 flex flex-col gap-6">
+                      {/* Academic & Personal Profile details */}
+                      <div className="p-6 bg-white border border-[#501537]/10 rounded-2xl shadow-sm">
+                        <h4 className="font-bold text-[#c5a059] text-[10px] uppercase tracking-widest border-b border-[#501537]/5 pb-2.5 mb-4 flex items-center gap-1.5">
+                          <User className="w-4 h-4" />
+                          <span>Student Profile Records</span>
+                        </h4>
 
-                    {currentSession.enrollment_status === 'accepted' && (
-                      <div className="bg-emerald-50 border border-emerald-100 text-emerald-800 p-3.5 rounded-lg text-[11px] leading-relaxed">
-                        <strong className="block text-emerald-900 font-bold mb-1 uppercase text-xs">● Status: Approved / Accepted</strong>
-                        Congratulations! Your enrollment request has been fully verified and **ACCEPTED** by our registrar and administrator. Welcome to the official program batch! Feel free to visit the campus center to initialize your physical class schedule and course material hand-outs.
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                          <div className="p-3 bg-[#fdfbf7] border border-slate-100 rounded-lg">
+                            <span className="block text-gray-400 font-bold text-[9px] uppercase mb-1">Student Full Name</span>
+                            <span className="text-[#501537] font-bold text-sm">{currentSession.full_name}</span>
+                          </div>
+                          <div className="p-3 bg-[#fdfbf7] border border-slate-100 rounded-lg">
+                            <span className="block text-gray-400 font-bold text-[9px] uppercase mb-1">Father's Name</span>
+                            <span className="text-[#501537] font-bold text-sm">{currentSession.father_name}</span>
+                          </div>
+                          <div className="p-3 bg-[#fdfbf7] border border-slate-100 rounded-lg">
+                            <span className="block text-gray-400 font-bold text-[9px] uppercase mb-1">Date of Birth</span>
+                            <span className="text-[#501537] font-semibold text-sm">{currentSession.dob || '—'}</span>
+                          </div>
+                          <div className="p-3 bg-[#fdfbf7] border border-slate-100 rounded-lg">
+                            <span className="block text-gray-400 font-bold text-[9px] uppercase mb-1">Gender</span>
+                            <span className="text-[#501537] font-semibold text-sm">{currentSession.gender || 'Female'}</span>
+                          </div>
+                          <div className="p-3 bg-[#fdfbf7] border border-slate-100 rounded-lg">
+                            <span className="block text-gray-400 font-bold text-[9px] uppercase mb-1">Highest Academic Qualification</span>
+                            <span className="text-[#501537] font-semibold text-sm">{currentSession.qualification || '—'}</span>
+                          </div>
+                          <div className="p-3 bg-[#fdfbf7] border border-slate-100 rounded-lg">
+                            <span className="block text-gray-400 font-bold text-[9px] uppercase mb-1">Phone Number</span>
+                            <span className="text-[#501537] font-semibold text-sm">{currentSession.phone}</span>
+                          </div>
+                          <div className="p-3 bg-[#fdfbf7] border border-slate-100 rounded-lg sm:col-span-2">
+                            <span className="block text-gray-400 font-bold text-[9px] uppercase mb-1">Permanent Residence Address</span>
+                            <span className="text-[#501537] font-semibold text-sm">{currentSession.residence}</span>
+                          </div>
+                        </div>
                       </div>
-                    )}
 
-                    {currentSession.enrollment_status === 'declined' && (
-                      <div className="bg-red-50 border border-red-150 text-red-800 p-3.5 rounded-lg text-[11px] leading-relaxed">
-                        <strong className="block text-red-900 font-bold mb-1 uppercase text-xs">● Status: Not Approved / Declined</strong>
-                        Sorry, your admission registration request was not accepted by our registrar for this batch. This might be due to incomplete educational credentials, slot limits, or details mismatch. Please verify your profile fields with the administrator or submit another request.
+                      {/* Enrolled Course & Fees ledger */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Course Card */}
+                        <div className="p-6 bg-white border border-[#501537]/10 rounded-2xl shadow-sm flex flex-col justify-between">
+                          <div>
+                            <h4 className="font-bold text-[#c5a059] text-[10px] uppercase tracking-widest border-b border-[#501537]/5 pb-2.5 mb-3 flex items-center gap-1.5">
+                              <Shirt className="w-4 h-4" />
+                              <span>Enrolled Course</span>
+                            </h4>
+                            <p className="text-[#501537] font-serif font-black text-base leading-snug mb-2">
+                              {currentSession.enrolled_course}
+                            </p>
+                          </div>
+                          <span className="text-[10px] text-slate-400 leading-relaxed block mt-3 font-sans">
+                            * Hands-on practical projects, pattern-making, customized couture styling, and certified curriculum study.
+                          </span>
+                        </div>
+
+                        {/* Financial Ledger */}
+                        <div className="p-6 bg-white border border-[#501537]/10 rounded-2xl shadow-sm flex flex-col justify-between">
+                          <div>
+                            <h4 className="font-bold text-[#c5a059] text-[10px] uppercase tracking-widest border-b border-[#501537]/5 pb-2.5 mb-3 flex items-center gap-1.5 font-sans">
+                              <Coins className="w-4 h-4" />
+                              <span>Financial Account Ledger</span>
+                            </h4>
+
+                            <div className="flex justify-between items-center mb-3">
+                              <span className="text-gray-400 font-bold text-[9px] uppercase">Tuition Fee</span>
+                              <span className="text-xl font-bold text-[#501537]">₹{
+                                students.find(s => s.id === currentSession.id || s.email.toLowerCase() === currentSession.email.toLowerCase())?.fees_amount || 0
+                              }</span>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-400 font-bold text-[9px] uppercase font-sans">Payment Ledger Record</span>
+                              <span className={`px-2.5 py-1 rounded text-[9px] font-bold ${
+                                students.find(s => s.id === currentSession.id || s.email.toLowerCase() === currentSession.email.toLowerCase())?.fees_paid
+                                  ? 'bg-emerald-50 text-[#2b704e] border border-emerald-100'
+                                  : 'bg-amber-50 text-amber-600 border border-amber-100'
+                              }`}>
+                                {students.find(s => s.id === currentSession.id || s.email.toLowerCase() === currentSession.email.toLowerCase())?.fees_paid
+                                  ? 'PAID / RECONCILED'
+                                  : 'CLEARANCE PENDING'
+                                }
+                              </span>
+                            </div>
+                          </div>
+
+                          <p className="text-[10px] text-slate-400 leading-relaxed mt-4 pt-2 border-t border-slate-50">
+                            {students.find(s => s.id === currentSession.id || s.email.toLowerCase() === currentSession.email.toLowerCase())?.fees_paid
+                              ? 'Thank you! Your payment record has been fully matched and accepted under electronic ledger files.'
+                              : 'Pending payments must be settled at the registration desk during campus entrance orientation.'
+                            }
+                          </p>
+                        </div>
                       </div>
-                    )}
-                  </div>
-
-                  <div className="flex gap-3 mt-6">
-                    <button 
-                      onClick={onStudentLogout}
-                      className="flex-grow py-3 bg-red-50 hover:bg-red-100 border border-red-200 text-[#b03a2e] rounded-xl text-xs font-bold uppercase transition-colors"
-                    >
-                      Log Out Profile
-                    </button>
-                    <button 
-                      onClick={() => setShowAuthModal(false)}
-                      className="flex-grow py-3 bg-[#501537] text-white rounded-xl text-xs font-bold uppercase transition-transform"
-                    >
-                      Close view
-                    </button>
+                    </div>
                   </div>
                 </div>
               ) : (

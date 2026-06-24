@@ -5,7 +5,19 @@
 
 import { useState, useEffect } from 'react';
 import { Student, Inquiry, Certificate, UserSession } from './types';
-import { getStoredData, saveStoredData, safeLocalStorage } from './supabase';
+import { 
+  getStoredData, 
+  saveStoredData, 
+  safeLocalStorage,
+  fetchStudentsFromSupabase,
+  fetchInquiriesFromSupabase,
+  fetchCertificatesFromSupabase,
+  syncStudentsToSupabase,
+  syncInquiriesToSupabase,
+  syncCertificatesToSupabase,
+  generateUUID,
+  ensureValidUUIDs
+} from './supabase';
 import PublicSite from './components/PublicSite';
 import AdminPanel from './components/AdminPanel';
 
@@ -27,6 +39,89 @@ export default function App() {
     setStudents(data.students);
     setInquiries(data.inquiries);
     setCertificates(data.certificates);
+
+    // Dynamic asynchronous synchronization with live Supabase backend if active
+    const syncWithBackend = async () => {
+      // 1. Cleanse existing local storage IDs to be valid UUIDs
+      ensureValidUUIDs(data);
+      setStudents(data.students);
+      setInquiries(data.inquiries);
+      setCertificates(data.certificates);
+      saveStoredData(data);
+
+      const liveStudents = await fetchStudentsFromSupabase();
+      const liveInquiries = await fetchInquiriesFromSupabase();
+      const liveCertificates = await fetchCertificatesFromSupabase();
+
+      if (liveStudents !== null || liveInquiries !== null || liveCertificates !== null) {
+        // Union Merge: merge local & remote records by ID so no data is ever lost
+        const studentMap = new Map<string, Student>();
+        data.students.forEach(s => studentMap.set(s.id, s));
+        if (liveStudents) {
+          liveStudents.forEach(s => studentMap.set(s.id, s));
+        }
+        const mergedStudents = Array.from(studentMap.values());
+
+        const inquiryMap = new Map<string, Inquiry>();
+        data.inquiries.forEach(i => inquiryMap.set(i.id, i));
+        if (liveInquiries) {
+          liveInquiries.forEach(i => inquiryMap.set(i.id, i));
+        }
+        const mergedInquiries = Array.from(inquiryMap.values());
+
+        const certMap = new Map<string, Certificate>();
+        data.certificates.forEach(c => certMap.set(c.id, c));
+        if (liveCertificates) {
+          liveCertificates.forEach(c => certMap.set(c.id, c));
+        }
+        const mergedCertificates = Array.from(certMap.values());
+
+        setStudents(mergedStudents);
+        setInquiries(mergedInquiries);
+        setCertificates(mergedCertificates);
+        saveStoredData({
+          students: mergedStudents,
+          inquiries: mergedInquiries,
+          certificates: mergedCertificates
+        });
+
+        // Push any local-only records back to Supabase
+        await syncStudentsToSupabase(mergedStudents);
+        await syncInquiriesToSupabase(mergedInquiries);
+        await syncCertificatesToSupabase(mergedCertificates);
+
+        // Sync student portal active session with updated data
+        const storedSession = safeLocalStorage.getItem('KCTC_STUDENT_SESSION');
+        if (storedSession) {
+          try {
+            const parsed = JSON.parse(storedSession);
+            const latestStudent = mergedStudents.find(s => s.id === parsed.id || s.email.toLowerCase() === parsed.email.toLowerCase());
+            if (latestStudent) {
+              const syncedSession: UserSession = {
+                id: latestStudent.id,
+                email: latestStudent.email,
+                password: latestStudent.password,
+                full_name: latestStudent.full_name,
+                father_name: latestStudent.father_name,
+                dob: latestStudent.dob,
+                gender: latestStudent.gender,
+                qualification: latestStudent.qualification,
+                residence: latestStudent.residence,
+                phone: latestStudent.phone,
+                enrolled_course: latestStudent.enrolled_course,
+                email_verified: latestStudent.email_verified,
+                enrollment_status: latestStudent.enrollment_status
+              };
+              setSession(syncedSession);
+              safeLocalStorage.setItem('KCTC_STUDENT_SESSION', JSON.stringify(syncedSession));
+            }
+          } catch (e) {
+            console.error('Failed to parse student session after sync:', e);
+          }
+        }
+      }
+    };
+    syncWithBackend();
 
     // Pull student portal auto-session if pre-saved
     const storedSession = safeLocalStorage.getItem('KCTC_STUDENT_SESSION');
@@ -66,6 +161,7 @@ export default function App() {
   const handleStudentsUpdate = (updated: Student[]) => {
     setStudents(updated);
     saveStoredData({ students: updated });
+    syncStudentsToSupabase(updated);
 
     // Instantly reconcile current student's portal view if they are viewing live
     if (session) {
@@ -95,17 +191,19 @@ export default function App() {
   const handleInquiriesUpdate = (updated: Inquiry[]) => {
     setInquiries(updated);
     saveStoredData({ inquiries: updated });
+    syncInquiriesToSupabase(updated);
   };
 
   const handleCertificatesUpdate = (updated: Certificate[]) => {
     setCertificates(updated);
     saveStoredData({ certificates: updated });
+    syncCertificatesToSupabase(updated);
   };
 
   // Add individual enquiry
   const handleAddNewInquiry = (newInq: Omit<Inquiry, 'id' | 'created_at'>) => {
     const created: Inquiry = {
-      id: 'inq_' + Math.random().toString(36).substr(2, 9),
+      id: generateUUID(),
       ...newInq,
       created_at: new Date().toISOString()
     };
@@ -113,6 +211,7 @@ export default function App() {
     const updated = [created, ...inquiries];
     setInquiries(updated);
     saveStoredData({ inquiries: updated });
+    syncInquiriesToSupabase(updated);
   };
 
   // Auth portal session transitions
@@ -123,7 +222,7 @@ export default function App() {
 
   // Register a new student
   const handleStudentRegister = (regData: Omit<Student, 'id' | 'created_at' | 'fees_paid' | 'fees_amount' | 'enrollment_status' | 'email_verified'>) => {
-    const studentId = 'student_' + Math.random().toString(36).substr(2, 9);
+    const studentId = generateUUID();
     const newStudent: Student = {
       id: studentId,
       ...regData,
@@ -165,6 +264,7 @@ export default function App() {
       studentsCopy[emailIndex].email_verified = true;
       setStudents(studentsCopy);
       saveStoredData({ students: studentsCopy });
+      syncStudentsToSupabase(studentsCopy);
     }
 
     if (session && session.email.toLowerCase() === email.toLowerCase()) {

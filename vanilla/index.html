@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCTC - Komal Creations Tailoring Center</title>
+  
+  <!-- CDNs -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS file -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#fdfbf7] text-[#5a4b53] font-sans">
+
+  <!-- Header / Navigation -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-[#fdfbf7]/90 backdrop-blur-md border-b border-[#501537]/10 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#" onclick="navigateTo('home'); return false;" class="flex items-center gap-2.5">
+        <div class="w-10 h-10 bg-[#501537] text-white flex items-center justify-center rounded-xl shadow-md">
+          <i data-lucide="scissors" class="w-5 h-5 text-[#c5a059]"></i>
+        </div>
+        <div>
+          <span class="block font-serif font-bold text-lg text-[#501537] tracking-tight leading-none">Komal Creations</span>
+          <span class="block text-[9px] font-bold text-[#c5a059] uppercase tracking-widest mt-1">Tailoring & Training</span>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider">
+        <a href="#" onclick="scrollToSection('home'); return false;" class="nav-link text-[#501537] hover:text-[#c5a059] transition-all">Home</a>
+        <a href="#" onclick="scrollToSection('courses'); return false;" class="nav-link hover:text-[#c5a059] transition-all">Courses</a>
+        <a href="#" onclick="scrollToSection('estimator'); return false;" class="nav-link hover:text-[#c5a059] transition-all font-bold">Cost Estimator</a>
+        <a href="#" onclick="scrollToSection('verify'); return false;" class="nav-link hover:text-[#c5a059] transition-all">Verify Certificate</a>
+        <a href="#" onclick="scrollToSection('contact'); return false;" class="nav-link hover:text-[#c5a059] transition-all">Contact Us</a>
+      </nav>
+
+      <!-- Portal Buttons -->
+      <div class="hidden md:flex items-center gap-4">
+        <button id="student-portal-btn" onclick="openStudentPortal()" class="px-4.5 py-2 border border-[#501537]/20 hover:border-[#501537] text-xs font-bold text-[#501537] uppercase tracking-wider rounded-xl transition-all flex items-center gap-2">
+          <i data-lucide="user" class="w-4 h-4"></i>
+          <span>Student Portal</span>
+        </button>
+        <button id="admin-panel-btn" onclick="toggleAdminPanel(true)" class="px-4.5 py-2 bg-[#501537] hover:bg-[#c5a059] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-[#c5a059]"></i>
+          <span>Admin Panel</span>
+        </button>
+      </div>
+
+      <!-- Mobile Nav Trigger -->
+      <button onclick="toggleMobileMenu()" class="md:hidden text-[#501537] p-2">
+        <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden bg-[#fdfbf7] border-b border-[#501537]/10 px-6 py-6 flex flex-col gap-4 text-sm font-semibold uppercase tracking-wider shadow-inner">
+      <a href="#" onclick="scrollToSection('home'); toggleMobileMenu(); return false;">Home</a>
+      <a href="#" onclick="scrollToSection('courses'); toggleMobileMenu(); return false;">Courses</a>
+      <a href="#" onclick="scrollToSection('estimator'); toggleMobileMenu(); return false;">Cost Estimator</a>
+      <a href="#" onclick="scrollToSection('verify'); toggleMobileMenu(); return false;">Verify Certificate</a>
+      <a href="#" onclick="scrollToSection('contact'); toggleMobileMenu(); return false;">Contact</a>
+      <div class="h-px bg-gray-200 my-2"></div>
+      <button onclick="openStudentPortal(); toggleMobileMenu();" class="py-2.5 border border-[#501537]/20 hover:border-[#501537] text-xs font-bold text-[#501537] rounded-xl flex items-center justify-center gap-2">
+        <i data-lucide="user" class="w-4 h-4"></i>
+        <span>Student Portal</span>
+      </button>
+      <button onclick="toggleAdminPanel(true); toggleMobileMenu();" class="py-2.5 bg-[#501537] hover:bg-[#c5a059] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4 text-[#c5a059]"></i>
+        <span>Admin Panel</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PUBLIC WEBSITE CONTAINER -->
+  <main id="public-site" class="pt-20">
+    
+    <!-- Hero Section -->
+    <section id="home" class="relative py-24 md:py-36 overflow-hidden bg-gradient-to-b from-[#f6f0ea] to-[#fdfbf7]">
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <div class="flex flex-col gap-6 text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#c5a059]/10 text-[#501537] text-xs font-extrabold uppercase tracking-widest rounded-full self-start">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#c5a059]"></i>
+            <span>Nabha's Finest Fashion Academy</span>
+          </div>
+          <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-[#501537] leading-tight tracking-tight">
+            Perfect Stitching. <br>Professional <span class="italic text-[#c5a059]">Training.</span>
+          </h1>
+          <p class="text-sm md:text-base text-[#5a4b53] leading-relaxed max-w-lg">
+            Komal Creations offers custom premium tailoring services alongside vocational certifications. Build your career with expert pattern drafting, cutting, and advanced boutique dress designing.
+          </p>
+          <div class="flex flex-wrap gap-4 mt-2">
+            <a href="#" onclick="scrollToSection('estimator'); return false;" class="px-6 py-3 bg-[#501537] hover:bg-[#c5a059] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-md">
+              Stitching Estimator
+            </a>
+            <a href="#" onclick="scrollToSection('courses'); return false;" class="px-6 py-3 border border-[#501537]/20 hover:border-[#501537] text-[#501537] text-xs font-bold uppercase tracking-widest rounded-xl transition-all">
+              Explore Courses
+            </a>
+          </div>
+        </div>
+        <div class="relative flex justify-center">
+          <div class="relative w-full max-w-md h-[400px] rounded-3xl overflow-hidden border border-[#501537]/10 shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1606240724602-5b21f896eae8?auto=format&fit=crop&q=80&w=800" alt="Boutique Designer Studio" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#501537]/40 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 bg-[#fdfbf7]/90 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-md">
+              <span class="block text-xs font-bold text-[#c5a059] uppercase tracking-widest">Bridal Specialties</span>
+              <span class="block font-serif font-bold text-sm text-[#501537] mt-1">Premium Bridal Lehengas &amp; Saree Blouses Custom Stitched</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-2xl overflow-hidden h-48 border border-gray-100 shadow-sm">
+            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+          </div>
+          <div class="rounded-2xl overflow-hidden h-56 mt-4 border border-gray-100 shadow-sm">
+            <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+          </div>
+        </div>
+        <div class="flex flex-col gap-5">
+          <span class="text-xs font-extrabold text-[#c5a059] uppercase tracking-widest">ABOUT THE INSTITUTE</span>
+          <h2 class="font-serif text-3xl font-bold text-[#501537]">Komal Creations Tailoring Center</h2>
+          <p class="text-sm text-[#5a4b53] leading-relaxed">
+            Established with a vision to empower aspiring fashion designers, Komal Training & Custom Creations Center (KCTC) is a trusted hub in Punjab, India. We combine exquisite hand-craftsmanship with vocational training.
+          </p>
+          <div class="grid grid-cols-3 gap-4 border-t border-b border-[#501537]/10 py-6 my-2">
+            <div>
+              <span class="block text-2xl font-bold text-[#501537]">100%</span>
+              <span class="block text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1">Vocational Focus</span>
+            </div>
+            <div>
+              <span class="block text-2xl font-bold text-[#501537]">500+</span>
+              <span class="block text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1">Alumni Trained</span>
+            </div>
+            <div>
+              <span class="block text-2xl font-bold text-[#501537]">Govt.</span>
+              <span class="block text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1">Aligned Syllabi</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-[#f6f0ea] flex items-center justify-center text-[#c5a059]">
+              <i data-lucide="award" class="w-5 h-5"></i>
+            </div>
+            <p class="text-xs font-semibold text-[#501537]">Verified Digital Credentials Issued instantly to qualified candidates</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Creations Portfolio section -->
+    <section class="py-20 bg-[#fdfbf7]">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div>
+            <span class="text-xs font-extrabold text-[#c5a059] uppercase tracking-widest">VISUAL INSPIRATIONS</span>
+            <h2 class="font-serif text-3xl font-bold text-[#501537] mt-1">Stitching Masterpieces</h2>
+          </div>
+          <!-- Filter buttons -->
+          <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
+            <button onclick="filterCreations('all')" id="filter-all" class="portfolio-filter-btn active">All Creations</button>
+            <button onclick="filterCreations('ethnic')" id="filter-ethnic" class="portfolio-filter-btn">Ethnic Wear</button>
+            <button onclick="filterCreations('western')" id="filter-western" class="portfolio-filter-btn">Western Gowns</button>
+            <button onclick="filterCreations('embroidery')" id="filter-embroidery" class="portfolio-filter-btn">Hand Work</button>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="creations-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Vocational Certification Courses -->
+    <section id="courses" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-[#501537] mb-3 relative inline-block">
+            Our Vocational Certification Courses
+            <span class="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-12 h-1 bg-[#c5a059] rounded-full"></span>
+          </h2>
+          <p class="text-sm text-[#5a4b53] mt-4">
+            Nurture your styling talent with hands-on curriculums. From absolute drafting novices to advanced bridal designers.
+          </p>
+        </div>
+
+        <!-- Quick Filter Search -->
+        <div class="max-w-md mx-auto mb-12 relative">
+          <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <i data-lucide="search" class="w-4.5 h-4.5"></i>
+          </div>
+          <input 
+            type="text" 
+            id="course-search-input"
+            oninput="handleCourseSearch(this.value)"
+            placeholder="Search courses (e.g. stitching, tailoring)..."
+            class="w-full pl-11 pr-4 py-3 rounded-full border border-[#501537]/10 outline-none focus:border-[#501537] text-sm text-[#501537]"
+          >
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8" id="courses-grid">
+          <!-- Courses populated dynamically via JS to support live reactive filtering -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Custom Stitching Cost Estimator -->
+    <section id="estimator" class="py-20 bg-[#f6f0ea]/50 border-t border-b border-[#501537]/5">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-[#501537] mb-3 relative inline-block">
+            Custom Stitching Cost Estimator
+            <span class="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-12 h-1 bg-[#c5a059] rounded-full"></span>
+          </h2>
+          <p class="text-sm text-[#5a4b53] mt-4">
+            Select your specifications and features to instantly estimate your custom clothing tailoring charge (approximate rate).
+          </p>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+          <!-- Configuration -->
+          <div class="lg:col-span-8 bg-white p-6 sm:p-8 rounded-2xl border border-[#501537]/10 shadow-sm flex flex-col gap-6">
+            
+            <!-- Apparel Selection -->
+            <div>
+              <label class="block text-xs font-bold text-[#5a4b53] uppercase tracking-wider mb-3">1. Select Apparel Choice</label>
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="estimator-apparel-grid">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <!-- Fabric Selection -->
+            <div>
+              <label class="block text-xs font-bold text-[#5a4b53] uppercase tracking-wider mb-2.5">2. Choose Fabric Material</label>
+              <div class="flex flex-wrap gap-2" id="estimator-fabric-list">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <!-- Sleeve Selection -->
+            <div>
+              <label class="block text-xs font-bold text-[#5a4b53] uppercase tracking-wider mb-2.5">3. Sleeve Styling Setup</label>
+              <div class="flex flex-wrap gap-2" id="estimator-sleeve-list">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <!-- Decorative Addons -->
+            <div>
+              <label class="block text-xs font-bold text-[#5a4b53] uppercase tracking-wider mb-2.5">4. Stylist Decorative Addons</label>
+              <div class="grid grid-cols-2 gap-2" id="estimator-addons-grid">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <!-- Quantity slider -->
+            <div>
+              <label class="block text-xs font-bold text-[#5a4b53] uppercase tracking-wider mb-2.5">5. Quantity (garments)</label>
+              <div class="flex items-center gap-4">
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="10" 
+                  id="estimator-quantity-slider"
+                  value="1"
+                  oninput="updateEstimatorQuantity(this.value)"
+                  class="flex-grow accent-[#501537] h-1.5 bg-gray-200 rounded-lg outline-none cursor-pointer"
+                >
+                <span id="estimator-quantity-badge" class="text-sm font-bold text-[#501537] w-12 text-right">1 Pcs</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Calculation Banner card -->
+          <div class="lg:col-span-4 bg-gradient-to-br from-[#501537] to-[#7c2658] p-6 rounded-2xl shadow-xl text-white">
+            <h3 class="font-serif font-bold text-xl mb-4 border-b border-white/20 pb-2 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-5 h-5 text-[#c5a059]"></i>
+              <span>Estimate Stitches</span>
+            </h3>
+
+            <div class="flex flex-col gap-3.5 text-xs text-white/80">
+              <div class="flex justify-between">
+                <span>Clothing:</span>
+                <strong id="summary-apparel" class="text-white capitalize">-</strong>
+              </div>
+              <div class="flex justify-between">
+                <span>Fabric style:</span>
+                <strong id="summary-fabric" class="text-white capitalize">-</strong>
+              </div>
+              <div class="flex justify-between">
+                <span>Sleeve length:</span>
+                <strong id="summary-sleeve" class="text-white capitalize">-</strong>
+              </div>
+              <div class="flex justify-between">
+                <span>Quantity:</span>
+                <strong id="summary-quantity" class="text-white">1 unit(s)</strong>
+              </div>
+
+              <div class="border-t border-white/20 pt-4 mt-2 flex justify-between items-baseline">
+                <span class="text-sm font-semibold">Stitching Total:</span>
+                <strong id="summary-total" class="text-2xl font-black text-[#e5cc96]">₹500</strong>
+              </div>
+            </div>
+
+            <button 
+              onclick="applyEstimateToInquiryForm()"
+              class="w-full mt-6 py-3 bg-[#c5a059] hover:bg-[#e5cc96] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md hover:scale-[1.03]"
+            >
+              Send Order Estimate
+            </button>
+
+            <p class="text-[10px] text-white/50 text-center leading-relaxed mt-4">
+              * Note: Estimation excludes base fabric cost. Stitching quote is customizable.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certificate Verification Portal -->
+    <section id="verify" class="py-20 bg-white border-b border-[#501537]/5">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <div class="w-12 h-12 bg-[#c5a059]/10 text-[#c5a059] flex items-center justify-center rounded-2xl mx-auto mb-4">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <h2 class="font-serif text-3xl font-bold text-[#501537] mb-2">Secure Certificate Verification</h2>
+        <p class="text-sm text-[#5a4b53] max-w-lg mx-auto mb-8">
+          Komal Creations vocational certificates are linked online. Enter a student's verification roll number below to retrieve live graduation details.
+        </p>
+
+        <form onsubmit="handleCertificateVerification(event)" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-grow">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+            </div>
+            <input 
+              type="text" 
+              id="verify-code-input"
+              placeholder="Enter Certificate Roll Number (e.g. CERT-101)..."
+              class="w-full pl-11 pr-4 py-3 rounded-xl border border-[#501537]/15 outline-none focus:border-[#501537] text-sm text-[#501537]"
+              required
+            >
+          </div>
+          <button 
+            type="submit" 
+            class="px-6 py-3 bg-[#501537] hover:bg-[#c5a059] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+          >
+            <span>Verify Now</span>
+          </button>
+        </form>
+        <p id="verify-error-msg" class="hidden text-xs text-red-600 font-bold mt-3"></p>
+      </div>
+    </section>
+
+    <!-- Inquiry submission & contact section -->
+    <section id="contact" class="py-20 bg-[#fdfbf7]">
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12">
+        
+        <!-- Contact info -->
+        <div class="md:col-span-5 flex flex-col gap-6">
+          <div>
+            <span class="text-xs font-extrabold text-[#c5a059] uppercase tracking-widest">GET IN TOUCH</span>
+            <h2 class="font-serif text-3xl font-bold text-[#501537] mt-1">Have Questions?</h2>
+            <p class="text-sm text-[#5a4b53] leading-relaxed mt-2">
+              Send us a message or call to book direct boutique measurements. Our team is happy to assist you with curriculum details or stitching schedules.
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-4 text-sm mt-2">
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-xl bg-[#501537]/5 text-[#501537] flex items-center justify-center shrink-0">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <strong class="block text-[#501537]">KCTC Main Center</strong>
+                <span class="text-xs text-gray-500">Circular Road, Near Patiala Gate, Nabha, Punjab, India</span>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-xl bg-[#501537]/5 text-[#501537] flex items-center justify-center shrink-0">
+                <i data-lucide="phone" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <strong class="block text-[#501537]">Call / WhatsApp</strong>
+                <span class="text-xs text-gray-500">+91 84274 00000</span>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-xl bg-[#501537]/5 text-[#501537] flex items-center justify-center shrink-0">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <strong class="block text-[#501537]">Email</strong>
+                <span class="text-xs text-gray-500">Universal8427@gmail.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submission form -->
+        <div class="md:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-[#501537]/10 shadow-sm">
+          <h3 class="font-serif font-bold text-xl text-[#501537] mb-6">Submit Inquiry or Estimate</h3>
+          
+          <form onsubmit="handleInquirySubmission(event)" class="grid sm:grid-cols-2 gap-4">
+            
+            <!-- Honeypot anti spam -->
+            <input type="text" id="spam-honeypot" class="hidden" value="">
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Your Full Name *</label>
+              <input type="text" id="inquiry-name" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="E.g. Priya Sharma" required>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp / Phone Number *</label>
+              <input type="tel" id="inquiry-phone" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="+91 XXXXX XXXXX" required>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Your Age (Years)</label>
+              <input type="number" id="inquiry-age" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="E.g. 24" min="10" max="100">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Interests / Custom Stitch Details *</label>
+              <textarea id="inquiry-interests" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium h-24" placeholder="Course details or estimate info here..." required></textarea>
+            </div>
+
+            <div class="sm:col-span-2 mt-2">
+              <button 
+                type="submit" 
+                class="w-full py-3 bg-[#501537] hover:bg-[#c5a059] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+              >
+                <i data-lucide="send" class="w-4 h-4 text-[#c5a059]"></i>
+                <span>Submit Details</span>
+              </button>
+            </div>
+          </form>
+
+          <div id="inquiry-alert" class="hidden mt-4 p-4 rounded-xl border flex items-start gap-3">
+            <div id="inquiry-alert-icon"></div>
+            <p id="inquiry-alert-text" class="text-xs leading-relaxed font-semibold"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-[#f6f0ea]/30 border-t border-[#501537]/5">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <span class="text-xs font-extrabold text-[#c5a059] uppercase tracking-widest">ALUMNAE VOICE</span>
+        <h2 class="font-serif text-3xl font-bold text-[#501537] mt-1 mb-8">What Our Students Say</h2>
+        
+        <div class="bg-white p-8 rounded-3xl border border-[#501537]/10 shadow-sm relative" id="testimonial-container">
+          <p class="font-serif italic text-lg text-[#501537] leading-relaxed" id="testimonial-quote">
+            "Enrolling in the 6-Month Advanced Fashion Designing course was the turning point of my life. Professional pattern cutting is outstanding!"
+          </p>
+          <div class="mt-6">
+            <strong class="block text-sm text-[#501537]" id="testimonial-name">Snehal Deshmukh</strong>
+            <span class="text-xs text-[#c5a059] font-bold uppercase tracking-wider mt-1" id="testimonial-role">Alumna, Batch of 2024</span>
+          </div>
+          
+          <!-- Navigation arrows -->
+          <div class="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2">
+            <button onclick="prevTestimonial()" class="w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-[#501537] hover:border-[#501537] transition-all">
+              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <div class="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2">
+            <button onclick="nextTestimonial()" class="w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-[#501537] hover:border-[#501537] transition-all">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADMIN PANEL CONTAINER -->
+  <div id="admin-panel" class="hidden min-h-screen pt-20 bg-slate-900 text-slate-100 flex">
+    
+    <!-- Admin Sidebar -->
+    <aside class="w-64 bg-slate-950 border-r border-slate-800 p-6 flex flex-col justify-between">
+      <div class="flex flex-col gap-6">
+        <div>
+          <span class="block text-[10px] font-extrabold text-[#c5a059] uppercase tracking-widest">KCTC BACKEND</span>
+          <h2 class="font-serif font-bold text-lg text-white mt-1">Management Portal</h2>
+        </div>
+        
+        <nav class="flex flex-col gap-1.5 text-xs font-semibold">
+          <button onclick="setAdminTab('analytics')" id="tab-analytics" class="admin-tab-btn active">
+            <i data-lucide="line-chart" class="w-4 h-4"></i>
+            <span>Dashboard Analytics</span>
+          </button>
+          <button onclick="setAdminTab('students')" id="tab-students" class="admin-tab-btn">
+            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+            <span>Student Registry</span>
+          </button>
+          <button onclick="setAdminTab('inquiries')" id="tab-inquiries" class="admin-tab-btn">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            <span>Lead Inquiries</span>
+          </button>
+          <button onclick="setAdminTab('certificates')" id="tab-certificates" class="admin-tab-btn">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            <span>Graduation Ledger</span>
+          </button>
+          <button onclick="setAdminTab('db-config')" id="tab-db-config" class="admin-tab-btn">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <span>Supabase Config</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 text-[10px] leading-tight">
+          <span class="block font-bold text-[#c5a059] mb-1">Live Database</span>
+          <div class="flex items-center gap-2 mt-1">
+            <span id="db-status-dot" class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+            <span id="db-status-text" class="text-slate-400 font-bold uppercase tracking-wider">OFFLINE FALLBACK</span>
+          </div>
+        </div>
+        <button onclick="toggleAdminPanel(false)" class="w-full py-2.5 bg-slate-800 hover:bg-red-950 hover:text-red-300 text-xs font-bold text-slate-300 uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Exit Admin</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Admin Content Area -->
+    <main class="flex-grow p-8 overflow-y-auto max-w-[calc(100vw-16rem)]">
+      
+      <!-- TAB: ANALYTICS -->
+      <section id="admin-sec-analytics" class="admin-sec flex flex-col gap-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-black tracking-tight text-white">System Insights</h1>
+            <p class="text-xs text-slate-400">Aggregated vocational course enrollments and stitching operations details.</p>
+          </div>
+          <button onclick="triggerDynamicSync()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center gap-2">
+            <i data-lucide="refresh-cw" class="w-4 h-4 text-[#c5a059]"></i>
+            <span>Sync Live DB</span>
+          </button>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex items-center gap-4">
+            <div class="w-12 h-12 bg-slate-900 text-[#c5a059] flex items-center justify-center rounded-xl shrink-0">
+              <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <span id="stat-total-students" class="block text-2xl font-black text-white">0</span>
+              <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Total Enrolled</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex items-center gap-4">
+            <div class="w-12 h-12 bg-slate-900 text-emerald-400 flex items-center justify-center rounded-xl shrink-0">
+              <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <span id="stat-active-students" class="block text-2xl font-black text-white">0</span>
+              <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Active Accounts</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex items-center gap-4">
+            <div class="w-12 h-12 bg-slate-900 text-[#c5a059] flex items-center justify-center rounded-xl shrink-0">
+              <i data-lucide="coins" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <span id="stat-[#c5a059]-revenue" class="block text-2xl font-black text-white">₹0</span>
+              <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Tailor Fees Paid</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex items-center gap-4">
+            <div class="w-12 h-12 bg-slate-900 text-amber-400 flex items-center justify-center rounded-xl shrink-0">
+              <i data-lucide="alert-circle" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <span id="stat-pending-fees" class="block text-2xl font-black text-white">0</span>
+              <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Pending Fees</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Course Enrollment Popularity</h3>
+            <div class="h-64 relative">
+              <canvas id="chart-courses"></canvas>
+            </div>
+          </div>
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Fees Invoice Breakdown</h3>
+            <div class="h-64 relative flex justify-center">
+              <canvas id="chart-fees" class="max-w-[240px]"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: STUDENTS REGISTRY -->
+      <section id="admin-sec-students" class="admin-sec hidden flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-black tracking-tight text-white">Student Ledger Registry</h1>
+            <p class="text-xs text-slate-400">Authorize academy enrollments, edit course selections, and track invoice payments.</p>
+          </div>
+          <button onclick="openAddStudentModal()" class="px-4 py-2 bg-[#501537] hover:bg-[#c5a059] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <span>Add Student</span>
+          </button>
+        </div>
+
+        <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col gap-4">
+          <!-- Table Search / Filters -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-between">
+            <div class="relative flex-grow max-w-md">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                <i data-lucide="search" class="w-4 h-4"></i>
+              </div>
+              <input 
+                type="text" 
+                id="student-filter-search" 
+                oninput="renderStudentsTable()"
+                placeholder="Search by student name or phone..."
+                class="w-full pl-11 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl outline-none focus:border-[#c5a059] text-xs text-slate-100 placeholder-slate-500"
+              >
+            </div>
+            <div class="flex gap-2">
+              <select id="student-filter-course" onchange="renderStudentsTable()" class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs font-semibold text-slate-300 outline-none">
+                <option value="">All Courses</option>
+                <option value="Boutique Tailoring & Stitching Course">Boutique Tailoring &amp; Stitching</option>
+                <option value="Advanced Fashion Designing Course">Advanced Fashion Designing</option>
+                <option value="Hand Embroidery & Zardozi Course">Hand Embroidery &amp; Zardozi</option>
+              </select>
+              <select id="student-filter-status" onchange="renderStudentsTable()" class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs font-semibold text-slate-300 outline-none">
+                <option value="">All Statuses</option>
+                <option value="accepted">Accepted</option>
+                <option value="pending">Pending</option>
+                <option value="declined">Declined</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Students Table -->
+          <div class="overflow-x-auto rounded-xl">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-900 text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[10px] font-black">
+                  <th class="p-3.5">Registration Info</th>
+                  <th class="p-3.5">Residence &amp; Contacts</th>
+                  <th class="p-3.5">Enrolled Course</th>
+                  <th class="p-3.5">Fees &amp; Status</th>
+                  <th class="p-3.5">Access Portal</th>
+                  <th class="p-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-students-tbody" class="divide-y divide-slate-800">
+                <!-- Populated dynamically via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: LEAD INQUIRIES -->
+      <section id="admin-sec-inquiries" class="admin-sec hidden flex flex-col gap-6">
+        <div>
+          <h1 class="text-2xl font-black tracking-tight text-white">Leads &amp; Inquiries</h1>
+          <p class="text-xs text-slate-400">Track and contact customers who filled online inquiries or custom stitching cost estimates.</p>
+        </div>
+
+        <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col gap-4">
+          <!-- Search leads -->
+          <div class="relative max-w-md">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </div>
+            <input 
+              type="text" 
+              id="inquiry-filter-search" 
+              oninput="renderInquiriesTable()"
+              placeholder="Search by client name or interests..."
+              class="w-full pl-11 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl outline-none focus:border-[#c5a059] text-xs text-slate-100 placeholder-slate-500"
+            >
+          </div>
+
+          <!-- Inquiries Table -->
+          <div class="overflow-x-auto rounded-xl">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-900 text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[10px] font-black">
+                  <th class="p-3.5">Date Received</th>
+                  <th class="p-3.5">Lead Details</th>
+                  <th class="p-3.5">Stitch Estimate / Interests</th>
+                  <th class="p-3.5">Status</th>
+                  <th class="p-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-inquiries-tbody" class="divide-y divide-slate-800">
+                <!-- Populated dynamically via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: GRADUATION LEDGER -->
+      <section id="admin-sec-certificates" class="admin-sec hidden flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-black tracking-tight text-white">Academy Certifications</h1>
+            <p class="text-xs text-slate-400">Issue secure vocational designer certificates and manage the public ledger records.</p>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Issue form -->
+          <form onsubmit="handleIssueCertificate(event)" class="lg:col-span-5 bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col gap-4">
+            <h3 class="text-xs font-black text-[#c5a059] uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center gap-2">
+              <i data-lucide="award" class="w-4.5 h-4.5"></i>
+              <span>Generate Certificate</span>
+            </h3>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Candidate Full Name *</label>
+              <input type="text" id="cert-student-name" class="w-full px-4.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" placeholder="E.g. Divya Nair" required>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Father's Name *</label>
+              <input type="text" id="cert-father-name" class="w-full px-4.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" placeholder="E.g. Sh. Rajesh Nair" required>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Certificate Roll No. *</label>
+                <input type="text" id="cert-roll-number" class="w-full px-4.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" placeholder="E.g. CERT-101" required>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Verification PIN/Code *</label>
+                <input type="text" id="cert-verify-code" class="w-full px-4.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-[#c5a059] font-mono outline-none focus:border-[#c5a059]" placeholder="Generated on save" required readonly>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Academy Vocational Course *</label>
+              <select id="cert-course-name" class="w-full px-4.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]" required>
+                <option value="Boutique Tailoring & Stitching Course">Boutique Tailoring &amp; Stitching Course</option>
+                <option value="Advanced Fashion Designing Course">Advanced Fashion Designing Course</option>
+                <option value="Hand Embroidery & Zardozi Course">Hand Embroidery &amp; Zardozi Course</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Passing Grade (E.g. A+) *</label>
+                <select id="cert-grade" class="w-full px-4.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]" required>
+                  <option value="A+">A+ (Outstanding)</option>
+                  <option value="A">A (Excellent)</option>
+                  <option value="B+">B+ (Very Good)</option>
+                  <option value="B">B (Good)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Passing Year *</label>
+                <input type="number" id="cert-passing-year" class="w-full px-4.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" value="2026" required>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full mt-2 py-3 bg-[#501537] hover:bg-[#c5a059] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md">
+              Publish &amp; Issue Certificate
+            </button>
+          </form>
+
+          <!-- List issued -->
+          <div class="lg:col-span-7 bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col gap-4">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-800 pb-2">Issued Certificates List</h3>
+            
+            <div class="relative">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                <i data-lucide="search" class="w-4 h-4"></i>
+              </div>
+              <input 
+                type="text" 
+                id="cert-filter-search" 
+                oninput="renderCertificatesLedger()"
+                placeholder="Search ledger by student name or roll..."
+                class="w-full pl-11 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl outline-none focus:border-[#c5a059] text-xs text-slate-100 placeholder-slate-500"
+              >
+            </div>
+
+            <!-- Scrollable list -->
+            <div class="max-h-[380px] overflow-y-auto flex flex-col gap-3 pr-1" id="issued-certificates-container">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: SUPABASE CONNECTIONS -->
+      <section id="admin-sec-db-config" class="admin-sec hidden flex flex-col gap-6 max-w-xl mx-auto">
+        <div class="text-center mb-2">
+          <h1 class="text-2xl font-black text-white">Database Credentials</h1>
+          <p class="text-xs text-slate-400">Maintain permanent cloud sync via your custom database schema.</p>
+        </div>
+
+        <div class="bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 flex flex-col gap-5">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Supabase Project URL *</label>
+            <input 
+              type="url" 
+              id="db-config-url"
+              placeholder="https://your-project.supabase.co" 
+              class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]"
+            >
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Supabase Anon Key *</label>
+            <textarea 
+              id="db-config-key"
+              rows="3"
+              placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
+              class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059] font-mono leading-relaxed"
+            ></textarea>
+          </div>
+
+          <!-- Connection test badge -->
+          <div id="db-test-result" class="hidden p-4 rounded-xl border flex items-start gap-3">
+            <div id="db-test-icon" class="mt-0.5"></div>
+            <div>
+              <strong id="db-test-title" class="block text-xs text-white"></strong>
+              <p id="db-test-desc" class="text-[10px] leading-relaxed mt-0.5"></p>
+            </div>
+          </div>
+
+          <div class="flex gap-4 mt-2">
+            <button 
+              onclick="testSupabaseConnectionCredentials()"
+              class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold uppercase tracking-wider rounded-xl transition-all border border-slate-700"
+            >
+              Test Connection
+            </button>
+            <button 
+              onclick="saveSupabaseConfiguration()"
+              class="flex-1 py-3 bg-[#c5a059] hover:bg-[#e5cc96] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md"
+            >
+              Save &amp; Active
+            </button>
+          </div>
+
+          <div class="h-px bg-slate-800 my-2"></div>
+
+          <div>
+            <span class="block text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1.5">Danger Zone</span>
+            <p class="text-[10px] text-slate-400 leading-relaxed mb-4">Wipe local datasets and disable custom Supabase connections to restart fresh.</p>
+            <button 
+              onclick="handleWipeAndResetAllData()"
+              class="py-2.5 px-4 bg-slate-900 hover:bg-red-950 hover:text-red-300 border border-slate-800 hover:border-red-900 text-[10px] font-bold text-slate-400 uppercase tracking-wider rounded-xl transition-all flex items-center gap-2"
+            >
+              <i data-lucide="trash-2" class="w-4 h-4 text-red-500"></i>
+              <span>Wipe Data &amp; Reset Connections</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-[#501537] text-white py-12" id="footer-site">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-8">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 bg-white/10 flex items-center justify-center rounded-lg">
+            <i data-lucide="scissors" class="w-4.5 h-4.5 text-[#c5a059]"></i>
+          </div>
+          <span class="font-serif font-bold text-md text-white tracking-tight">KCTC Academy</span>
+        </div>
+        <p class="text-xs text-white/70 leading-relaxed">
+          Komal Creations Tailoring & Training Center is Nabha's leading boutique design vocational school, certifying students globally.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-xs font-black text-[#c5a059] uppercase tracking-widest mb-4">VOCATIONAL PATHS</h4>
+        <div class="flex flex-col gap-2.5 text-xs text-white/70">
+          <a href="#" onclick="scrollToSection('courses'); return false;" class="hover:text-white">Boutique Stitching Course</a>
+          <a href="#" onclick="scrollToSection('courses'); return false;" class="hover:text-white">Advanced Designing Course</a>
+          <a href="#" onclick="scrollToSection('courses'); return false;" class="hover:text-white">Embroidery &amp; Zardozi</a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-xs font-black text-[#c5a059] uppercase tracking-widest mb-4">PORTAL DIRECTS</h4>
+        <div class="flex flex-col gap-2.5 text-xs text-white/70">
+          <a href="#" onclick="scrollToSection('estimator'); return false;" class="hover:text-white font-bold text-[#c5a059]">Tailor Cost Estimator</a>
+          <a href="#" onclick="openStudentPortal(); return false;" class="hover:text-white">Student Portal Login</a>
+          <a href="#" onclick="toggleAdminPanel(true); return false;" class="hover:text-white">Administrator Access</a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-xs font-black text-[#c5a059] uppercase tracking-widest mb-4">RELIABILITY</h4>
+        <p class="text-xs text-white/70 leading-relaxed mb-3">
+          100% compliant with standard relational tables. Connects dynamically to remote Supabase instances.
+        </p>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full text-[10px] font-bold uppercase tracking-wider text-[#c5a059]">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Online Verified</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-white/50">
+      <span>&copy; 2026 Komal Creations Tailoring Center (KCTC). Circular Road, Nabha, Punjab, India.</span>
+      <div class="flex gap-4">
+        <span>Verified Registry</span>
+        <span>Secure HTTPS Connection</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: STUDENT AUTH (LOGIN / REGISTER) -->
+  <div id="student-auth-modal" class="hidden fixed inset-0 z-50 bg-[#501537]/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden border border-[#501537]/15 shadow-2xl relative flex flex-col animate-fade-in">
+      <button onclick="closeStudentAuthModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Auth header tabs -->
+      <div class="grid grid-cols-2 text-center border-b border-[#501537]/5">
+        <button onclick="switchAuthTab('login')" id="auth-tab-login" class="py-4 text-xs font-bold uppercase tracking-widest text-[#501537] border-b-2 border-[#501537]">Login Portal</button>
+        <button onclick="switchAuthTab('register')" id="auth-tab-register" class="py-4 text-xs font-bold uppercase tracking-widest text-gray-400 border-b-2 border-transparent">Register</button>
+      </div>
+
+      <div class="p-6 flex flex-col gap-4">
+        
+        <!-- Tab form: LOGIN -->
+        <form id="auth-form-login" onsubmit="handleStudentLogin(event)" class="flex flex-col gap-4">
+          <p class="text-xs text-gray-500 leading-relaxed">Access your vocational progress, invoice details, and email verification stamps. Your default password is your graduation roll number or initial passcode.</p>
+          
+          <div>
+            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Registered Email *</label>
+            <input type="email" id="login-email" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="E.g. priya@gmail.com" required>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Portal Password (Roll No) *</label>
+            <input type="password" id="login-password" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="E.g. password123" required>
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-[#501537] hover:bg-[#c5a059] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md mt-2">
+            Login Now
+          </button>
+        </form>
+
+        <!-- Tab form: REGISTER -->
+        <form id="auth-form-register" onsubmit="handleStudentRegister(event)" class="hidden flex flex-col gap-3 max-h-[400px] overflow-y-auto pr-1">
+          <p class="text-xs text-gray-500 leading-relaxed mb-1">Fill out registration below. An administrator will review your application and assign initial tailoring fees amounts.</p>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Candidate Name *</label>
+              <input type="text" id="reg-name" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="Priya Sharma" required>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Father's Name *</label>
+              <input type="text" id="reg-father" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="Sh. Rajesh Sharma" required>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Date of Birth *</label>
+              <input type="date" id="reg-dob" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" required>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Gender *</label>
+              <select id="reg-gender" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium">
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Qualifications *</label>
+              <input type="text" id="reg-qualification" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="E.g. High School" required>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Residence District *</label>
+              <input type="text" id="reg-residence" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="E.g. Nabha, Patiala" required>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">WhatsApp Contact *</label>
+              <input type="tel" id="reg-phone" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="+91 XXXXX XXXXX" required>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Email Address *</label>
+              <input type="email" id="reg-email" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="priya@gmail.com" required>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Select Vocational Course *</label>
+            <select id="reg-course" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" required>
+              <option value="Boutique Tailoring & Stitching Course">Boutique Tailoring &amp; Stitching Course (3 Mos)</option>
+              <option value="Advanced Fashion Designing Course">Advanced Fashion Designing Course (6 Mos)</option>
+              <option value="Hand Embroidery & Zardozi Course">Hand Embroidery &amp; Zardozi Course (2 Mos)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Choose Password *</label>
+            <input type="password" id="reg-password" class="w-full px-3 py-2 rounded-xl border border-gray-200 outline-none focus:border-[#501537] text-xs font-medium" placeholder="Create portal password" required>
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-[#501537] hover:bg-[#c5a059] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md mt-2">
+            Register Account
+          </button>
+        </form>
+
+        <p id="auth-error-msg" class="hidden text-xs text-red-600 font-bold text-center"></p>
+        <p id="auth-success-msg" class="hidden text-xs text-emerald-600 font-bold text-center"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: STUDENT DASHBOARD PORTAL VIEWER -->
+  <div id="student-portal-modal" class="hidden fixed inset-0 z-50 bg-[#501537]/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden border border-[#501537]/15 shadow-2xl relative animate-fade-in">
+      <button onclick="closeStudentPortal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Header with branding -->
+      <div class="bg-[#501537] text-white p-6">
+        <span class="text-[9px] font-extrabold text-[#c5a059] uppercase tracking-widest">KCTC Vocational Student</span>
+        <h2 id="portal-welcome-name" class="font-serif text-2xl font-bold mt-1">Welcome Back, Student!</h2>
+        <p class="text-xs text-white/70 mt-1">Circular Road Main Campus, Nabha, Punjab, India</p>
+      </div>
+
+      <div class="p-6 grid sm:grid-cols-12 gap-6">
+        
+        <!-- Course details -->
+        <div class="sm:col-span-7 flex flex-col gap-4">
+          <h3 class="text-xs font-extrabold text-[#501537] uppercase tracking-wider border-b border-gray-100 pb-2">Academic Enrollment Card</h3>
+          
+          <div class="grid grid-cols-2 gap-x-4 gap-y-3.5 text-xs">
+            <div>
+              <span class="block text-gray-400 text-[10px] font-bold uppercase">Father's Name</span>
+              <span id="portal-father" class="font-semibold text-[#501537]">-</span>
+            </div>
+            <div>
+              <span class="block text-gray-400 text-[10px] font-bold uppercase">Candidate DOB</span>
+              <span id="portal-dob" class="font-semibold text-[#501537]">-</span>
+            </div>
+            <div>
+              <span class="block text-gray-400 text-[10px] font-bold uppercase">WhatsApp Number</span>
+              <span id="portal-phone" class="font-semibold text-[#501537]">-</span>
+            </div>
+            <div>
+              <span class="block text-gray-400 text-[10px] font-bold uppercase">Email Address</span>
+              <span id="portal-email" class="font-semibold text-slate-500 truncate block max-w-[160px]">-</span>
+            </div>
+            <div class="col-span-2">
+              <span class="block text-gray-400 text-[10px] font-bold uppercase">Enrolled Course</span>
+              <strong id="portal-course" class="text-xs font-bold text-[#501537] block mt-0.5">-</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enrollment status & Fees invoice -->
+        <div class="sm:col-span-5 bg-[#fdfbf7] border border-[#501537]/10 p-5 rounded-2xl flex flex-col gap-4 justify-between">
+          <div>
+            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Enrollment &amp; Invoices</span>
+            
+            <div class="flex items-center gap-2 mt-2">
+              <span id="portal-status-dot" class="w-3 h-3 rounded-full bg-amber-400 shrink-0"></span>
+              <span id="portal-status-text" class="text-xs font-bold text-[#501537] uppercase tracking-wider">PENDING VERIFICATION</span>
+            </div>
+
+            <!-- Fees invoice -->
+            <div class="mt-4 border-t border-gray-200 pt-3">
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Tailoring Course Fees</span>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-slate-500">Invoice Amount:</span>
+                <strong id="portal-fees-amount" class="text-sm font-extrabold text-[#501537]">₹0</strong>
+              </div>
+              <div class="flex justify-between items-center mt-1">
+                <span class="text-xs text-slate-500">Invoice Status:</span>
+                <span id="portal-fees-status-badge" class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700">UNPAID</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2 border-t border-gray-200 pt-4 mt-2">
+            <button onclick="logoutStudentPortal()" class="w-full py-2 bg-white border border-red-200 hover:bg-red-50 text-red-600 text-xs font-bold uppercase tracking-wider rounded-xl transition-all">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DIGITAL VERIFIED CERTIFICATE VIEWER -->
+  <div id="certificate-viewer-modal" class="hidden fixed inset-0 z-50 bg-[#501537]/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-3xl overflow-hidden border border-[#501537]/15 shadow-2xl relative animate-fade-in flex flex-col">
+      <button onclick="closeCertificateViewerModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1 z-10 print:hidden">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Action panel at the top -->
+      <div class="bg-slate-100 px-6 py-3 border-b flex justify-between items-center print:hidden">
+        <span class="text-xs font-semibold text-slate-600 flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
+          <span>Official Secure Verification Registry</span>
+        </span>
+        <button onclick="window.print()" class="px-4 py-1.5 bg-[#501537] hover:bg-[#c5a059] text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Print Certificate</span>
+        </button>
+      </div>
+
+      <!-- Printable Certificate layout -->
+      <div class="p-8 sm:p-12 bg-[#fdfbf7] flex flex-col items-center border-[12px] border-double border-[#501537]/15 relative select-none" id="certificate-print-area">
+        
+        <!-- Corner decorations -->
+        <div class="absolute top-4 left-4 text-[#501537]/10 text-3xl font-serif">✂️</div>
+        <div class="absolute top-4 right-4 text-[#501537]/10 text-3xl font-serif">✂️</div>
+        <div class="absolute bottom-4 left-4 text-[#501537]/10 text-3xl font-serif">✂️</div>
+        <div class="absolute bottom-4 right-4 text-[#501537]/10 text-3xl font-serif">✂️</div>
+
+        <!-- Academy logo watermark or emblem -->
+        <div class="w-20 h-20 bg-[#501537]/5 text-[#501537] rounded-full flex items-center justify-center border-2 border-dashed border-[#c5a059] mb-4">
+          <i data-lucide="scissors" class="w-10 h-10 text-[#c5a059]/80"></i>
+        </div>
+
+        <span class="text-xs font-extrabold text-[#c5a059] uppercase tracking-[0.2em] text-center">KOMAL TRAINING CENTER</span>
+        <h1 class="font-serif text-3xl sm:text-4xl font-bold text-[#501537] mt-2 text-center">Certificate of Qualification</h1>
+        <p class="text-xs italic text-[#5a4b53]/80 mt-1">Circular Road, Nabha, Punjab, India</p>
+
+        <div class="w-32 h-px bg-[#c5a059]/30 my-6"></div>
+
+        <p class="text-xs uppercase tracking-widest text-[#5a4b53] font-bold">This is proudly awarded to</p>
+        <h2 id="cert-view-name" class="font-serif text-2xl sm:text-3xl font-bold text-[#501537] mt-2 mb-1 border-b border-[#501537]/10 pb-1 px-8 text-center min-w-[200px]">-</h2>
+        
+        <p class="text-xs text-[#5a4b53] max-w-lg leading-relaxed text-center mt-3">
+          S/o / D/o <strong id="cert-view-father" class="font-semibold text-[#501537]">-</strong>, having successfully met the academic training criteria, pattern drafting tests, and tailoring audits aligned with KCTC curricula.
+        </p>
+
+        <p class="text-xs font-bold text-[#c5a059] uppercase tracking-wider mt-5">IN VOCATIONAL FIELD OF</p>
+        <h3 id="cert-view-course" class="font-serif text-lg font-bold text-[#501537] mt-1 text-center bg-[#501537]/5 px-4 py-1.5 rounded-lg border border-[#501537]/10">-</h3>
+
+        <!-- Ledger details and signatures -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-lg mt-10 border-t border-gray-100 pt-6 text-[10px] text-gray-500 font-bold uppercase tracking-wider text-center">
+          <div>
+            <span class="block text-gray-400">Roll Number</span>
+            <strong id="cert-view-roll" class="block text-slate-700 mt-0.5">-</strong>
+          </div>
+          <div>
+            <span class="block text-gray-400">Academic Grade</span>
+            <strong id="cert-view-grade" class="block text-emerald-600 mt-0.5">-</strong>
+          </div>
+          <div>
+            <span class="block text-gray-400">Passing Year</span>
+            <strong id="cert-view-year" class="block text-slate-700 mt-0.5">-</strong>
+          </div>
+          <div>
+            <span class="block text-gray-400">Verification ID</span>
+            <strong id="cert-view-code" class="block text-[#c5a059] font-mono mt-0.5">-</strong>
+          </div>
+        </div>
+
+        <div class="w-full max-w-lg flex justify-between items-end mt-12">
+          <div class="flex flex-col items-center">
+            <span class="block border-b border-gray-300 w-28 text-center pb-1 text-[9px] font-bold text-[#501537]">Komal creations</span>
+            <span class="text-[8px] text-gray-400 uppercase tracking-widest mt-1">Registrar</span>
+          </div>
+          
+          <!-- Security seal badge overlay -->
+          <div class="w-16 h-16 rounded-full border-4 border-[#c5a059]/40 flex items-center justify-center p-1 font-serif text-[7px] text-[#c5a059] font-black uppercase text-center shrink-0 border-double select-none transform rotate-12 relative bg-white/50 shadow-inner">
+            <span>OFFICIALLY VERIFIED SECURE SEAL</span>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <span class="block border-b border-gray-300 w-28 text-center pb-1 text-[9px] font-bold text-[#501537]">Komalpreet Kaur</span>
+            <span class="text-[8px] text-gray-400 uppercase tracking-widest mt-1">Director, KCTC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PASS GATE MODAL -->
+  <div id="admin-pass-gate" class="hidden fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl w-full max-w-sm flex flex-col gap-6 animate-fade-in">
+      <div class="text-center">
+        <div class="w-12 h-12 bg-[#501537] text-white flex items-center justify-center rounded-2xl mx-auto mb-3 border border-[#c5a059]/30 shadow-md">
+          <i data-lucide="shield-check" class="w-6 h-6 text-[#c5a059]"></i>
+        </div>
+        <h2 class="font-serif font-bold text-xl text-white">Administrator Portal</h2>
+        <p class="text-xs text-slate-400 mt-1">Circular Road Management Center, Nabha</p>
+      </div>
+
+      <form onsubmit="handleAdminGatewayLogin(event)" class="flex flex-col gap-4">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Admin Email Address *</label>
+          <input type="email" id="admin-email" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" placeholder="E.g. admin@komalcreations.com" required>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Portal Password *</label>
+          <input type="password" id="admin-password" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" placeholder="E.g. universal" required>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-[#c5a059] hover:bg-[#e5cc96] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md mt-2">
+          Authorize Login
+        </button>
+      </form>
+
+      <p id="admin-gate-error" class="hidden text-xs text-red-400 font-bold text-center"></p>
+
+      <button onclick="toggleAdminPanel(false)" class="text-xs text-slate-500 hover:text-slate-300 transition-all font-bold uppercase tracking-wider text-center">
+        Back to Public Site
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD STUDENT (ADMIN) -->
+  <div id="add-student-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-950 rounded-3xl w-full max-w-xl overflow-hidden border border-slate-800 shadow-2xl relative flex flex-col animate-fade-in">
+      <button onclick="closeAddStudentModal()" class="absolute right-4 top-4 text-slate-500 hover:text-slate-300 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="p-6 border-b border-slate-800">
+        <h2 class="text-lg font-black text-white flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-5 h-5 text-[#c5a059]"></i>
+          <span>Add New Student Enrollment</span>
+        </h2>
+      </div>
+
+      <form onsubmit="handleAdminAddStudentSubmit(event)" class="p-6 flex flex-col gap-4 max-h-[500px] overflow-y-auto">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Full Name *</label>
+            <input type="text" id="add-student-name" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Father's Name *</label>
+            <input type="text" id="add-student-father" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Date of Birth</label>
+            <input type="date" id="add-student-dob" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Gender</label>
+            <select id="add-student-gender" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Qualifications</label>
+            <input type="text" id="add-student-qualification" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" placeholder="E.g. Under-grad">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Residence District *</label>
+            <input type="text" id="add-student-residence" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">WhatsApp Contact *</label>
+            <input type="tel" id="add-student-phone" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Email Address *</label>
+            <input type="email" id="add-student-email" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Portal Password</label>
+          <input type="text" id="add-student-password" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-[#c5a059] font-mono outline-none focus:border-[#c5a059]" placeholder="password123">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Academy Vocational Course *</label>
+          <select id="add-student-course" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]" required>
+            <option value="Boutique Tailoring & Stitching Course">Boutique Tailoring &amp; Stitching Course (3 Mos)</option>
+            <option value="Advanced Fashion Designing Course">Advanced Fashion Designing Course (6 Mos)</option>
+            <option value="Hand Embroidery & Zardozi Course">Hand Embroidery &amp; Zardozi Course (2 Mos)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Stitching Fees (INR) *</label>
+            <input type="number" id="add-student-fees" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" value="4500" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Initial Enrollment Status *</label>
+            <select id="add-student-status" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]">
+              <option value="accepted">Accepted / Live</option>
+              <option value="pending">Pending Audit</option>
+              <option value="declined">Declined</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 bg-slate-900 p-4 rounded-xl border border-slate-800 mt-2">
+          <input type="checkbox" id="add-student-paid" class="accent-[#c5a059] w-4 h-4 shrink-0">
+          <label for="add-student-paid" class="text-xs text-slate-300 font-bold uppercase cursor-pointer">Mark tailoring tuition fees as PAID</label>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-[#c5a059] hover:bg-[#e5cc96] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md mt-2">
+          Save Enrollment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT STUDENT (ADMIN) -->
+  <div id="edit-student-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-950 rounded-3xl w-full max-w-xl overflow-hidden border border-slate-800 shadow-2xl relative flex flex-col animate-fade-in">
+      <button onclick="closeEditStudentModal()" class="absolute right-4 top-4 text-slate-500 hover:text-slate-300 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="p-6 border-b border-slate-800">
+        <h2 class="text-lg font-black text-white flex items-center gap-2">
+          <i data-lucide="edit" class="w-5 h-5 text-[#c5a059]"></i>
+          <span>Edit Student Details</span>
+        </h2>
+      </div>
+
+      <form onsubmit="handleAdminEditStudentSubmit(event)" class="p-6 flex flex-col gap-4 max-h-[500px] overflow-y-auto">
+        <input type="hidden" id="edit-student-id">
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Full Name *</label>
+            <input type="text" id="edit-student-name" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Father's Name *</label>
+            <input type="text" id="edit-student-father" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Date of Birth</label>
+            <input type="date" id="edit-student-dob" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Gender</label>
+            <select id="edit-student-gender" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Qualifications</label>
+            <input type="text" id="edit-student-qualification" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Residence District *</label>
+            <input type="text" id="edit-student-residence" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">WhatsApp Contact *</label>
+            <input type="tel" id="edit-student-phone" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Email Address *</label>
+            <input type="email" id="edit-student-email" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Portal Password</label>
+          <input type="text" id="edit-student-password" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-[#c5a059] font-mono outline-none focus:border-[#c5a059]">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Academy Vocational Course *</label>
+          <select id="edit-student-course" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]" required>
+            <option value="Boutique Tailoring & Stitching Course">Boutique Tailoring &amp; Stitching Course (3 Mos)</option>
+            <option value="Advanced Fashion Designing Course">Advanced Fashion Designing Course (6 Mos)</option>
+            <option value="Hand Embroidery & Zardozi Course">Hand Embroidery &amp; Zardozi Course (2 Mos)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tuition Fees (INR) *</label>
+            <input type="number" id="edit-student-fees" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-[#c5a059]" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Enrollment Status *</label>
+            <select id="edit-student-status" class="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-[#c5a059]" required>
+              <option value="accepted">Accepted / Live</option>
+              <option value="pending">Pending Audit</option>
+              <option value="declined">Declined</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 bg-slate-900 p-4 rounded-xl border border-slate-800 mt-2">
+          <input type="checkbox" id="edit-student-paid" class="accent-[#c5a059] w-4 h-4 shrink-0">
+          <label for="edit-student-paid" class="text-xs text-slate-300 font-bold uppercase cursor-pointer">Tuition Fees are Paid</label>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-[#c5a059] hover:bg-[#e5cc96] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md mt-2">
+          Update Records
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main scripts -->
+  <script src="script.js"></script>
+</body>
+</html>

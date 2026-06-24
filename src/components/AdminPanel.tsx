@@ -46,7 +46,7 @@ import {
   Legend
 } from 'recharts';
 import { Student, Inquiry, Certificate } from '../types';
-import { getSupabaseConfig, setSupabaseConfig, resetSupabaseConfig } from '../supabase';
+import { getSupabaseConfig, setSupabaseConfig, resetSupabaseConfig, wipeAllBackendData, generateUUID } from '../supabase';
 
 interface AdminPanelProps {
   students: Student[];
@@ -252,7 +252,7 @@ export default function AdminPanel({
   const handleAddNewStudent = (e: React.FormEvent) => {
     e.preventDefault();
     const created: Student = {
-      id: 'student_' + Math.random().toString(36).substr(2, 9),
+      id: generateUUID(),
       full_name: newStudent.full_name || 'Anonymous Student',
       father_name: newStudent.father_name || '-',
       dob: newStudent.dob || '',
@@ -312,7 +312,7 @@ export default function AdminPanel({
     if (action === 'convert') {
       // Create new student structure matches inquiry
       const createdStudent: Student = {
-        id: 'student_' + Math.random().toString(36).substr(2, 9),
+        id: generateUUID(),
         full_name: item.full_name,
         father_name: '-',
         residence: 'Punjab, India',
@@ -346,7 +346,7 @@ export default function AdminPanel({
     }
 
     const created: Certificate = {
-      id: 'cert_' + Math.random().toString(36).substr(2, 9),
+      id: generateUUID(),
       student_name: newCert.student_name,
       father_name: newCert.father_name,
       roll_number: newCert.roll_number,
@@ -388,7 +388,7 @@ export default function AdminPanel({
     setTimeout(() => {
       // Simple mock trigger validation
       if (dbConfig.url.includes('supabase.co')) {
-        setSupabaseConfig(dbConfig.url, dbConfig.key);
+        setSupabaseConfig(dbConfig.url, dbConfig.key, dbConfig.publishableKey);
         setDbStatus('connected');
       } else {
         setDbStatus('error');
@@ -403,6 +403,23 @@ export default function AdminPanel({
     setDbConfig(config);
     setDbStatus('idle');
     alert('DB config cleared. Platform now operating in safe offline local storage mode.');
+  };
+
+  // Clear all demo/testing records to start fresh with real student inputs
+  const handleClearAllData = async () => {
+    if (window.confirm('Are you sure you want to clear all current student, inquiry, and certificate records? This will delete all mock/testing entries in your browser and on your live backend database so you can start fresh with real students. This is non-reversible.')) {
+      setDbStatus('testing');
+      try {
+        await wipeAllBackendData();
+      } catch (err) {
+        console.error('Failed to wipe backend data directly:', err);
+      }
+      onUpdateStudents([]);
+      onUpdateInquiries([]);
+      onUpdateCertificates([]);
+      setDbStatus('idle');
+      alert('All demo and testing data has been wiped successfully from both your local browser and live Supabase backend! You now have a completely clean database to register real students.');
+    }
   };
 
   // CSV Generator downloader
@@ -1242,6 +1259,17 @@ export default function AdminPanel({
                       />
                     </div>
 
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">PUBLISHABLE KEY</label>
+                      <input 
+                        type="text"
+                        value={dbConfig.publishableKey || ''}
+                        onChange={(e) => setDbConfig(prev => ({ ...prev, publishableKey: e.target.value }))}
+                        className="px-3 py-2 border rounded-lg text-xs font-mono"
+                        placeholder="sb_publishable_..."
+                      />
+                    </div>
+
                     {dbStatus === 'connected' && (
                       <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-lg text-[11px] font-bold flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 shrink-0" />
@@ -1294,6 +1322,20 @@ export default function AdminPanel({
 
                     <div className="bg-[#f0f9ff] text-[#0369a1] border border-[#b9e6fe] p-3 rounded-lg text-[10px] leading-relaxed mt-2.5">
                       <strong>* Dynamic Cache Protection:</strong> If client queries fail during network dropouts or database connection timeouts, the board automatically preserves write logs seamlessly into client state, saving inputs securely until reload.
+                    </div>
+
+                    <div className="border-t border-slate-150 pt-4 mt-2.5 flex flex-col gap-2">
+                      <h4 className="text-[10px] font-bold uppercase tracking-wider text-red-650">Testing Sandbox Clean Slate</h4>
+                      <p className="text-[11px] text-slate-500 leading-relaxed">
+                        If you are launching this system live and want to erase all initial mock students, inquiries, and demo certificate data to start with a blank database, click below.
+                      </p>
+                      <button
+                        onClick={handleClearAllData}
+                        className="w-full mt-1 py-2 px-3 bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 text-red-700 font-bold rounded-lg text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Wipe All Demo & Testing Data</span>
+                      </button>
                     </div>
                   </div>
                 </div>
