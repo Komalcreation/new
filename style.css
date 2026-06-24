@@ -1,0 +1,193 @@
+/* Custom styling for Komal Creations Tailoring Center (Vanilla Version) */
+
+/* Core font override declarations */
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Active navigation link */
+.nav-link.active {
+  color: #c5a059;
+  font-weight: 700;
+  border-bottom: 2px solid #c5a059;
+}
+
+/* Custom transitions and hover states */
+.portfolio-filter-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: #501537;
+  border: 1px solid rgba(80, 21, 55, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.portfolio-filter-btn.active, .portfolio-filter-btn:hover {
+  background-color: #501537;
+  color: #ffffff;
+  border-color: #501537;
+}
+
+/* Estimator Choice button active styles */
+.estimator-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(80, 21, 55, 0.1);
+  background-color: #fdfbf7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.estimator-btn.active {
+  border-color: #501537;
+  background-color: rgba(80, 21, 55, 0.05);
+  box-shadow: 0 4px 12px rgba(80, 21, 55, 0.05);
+}
+
+.estimator-pill {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1px solid rgba(80, 21, 55, 0.15);
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.estimator-pill.active {
+  background-color: #501537;
+  color: #ffffff;
+  border-color: #501537;
+}
+
+/* Estimator Checkbox button */
+.estimator-addon-card {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(80, 21, 55, 0.1);
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.estimator-addon-card.active {
+  border-color: #501537;
+  background-color: rgba(80, 21, 55, 0.03);
+}
+
+/* Admin panel Tab styles */
+.admin-tab-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-align: left;
+}
+
+.admin-tab-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.admin-tab-btn.active {
+  background-color: #501537;
+  color: #ffffff;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Scrollbar customizations */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(80, 21, 55, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(80, 21, 55, 0.4);
+}
+
+/* PRINTING RULES FOR INDIVIDUAL VERIFIED DIPLOMA */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #certificate-viewer-modal, #certificate-viewer-modal * {
+    visibility: visible;
+  }
+  
+  #certificate-viewer-modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Hide print buttons and controls during print */
+  .print\:hidden, .print\:hidden * {
+    display: none !important;
+  }
+
+  /* Scale layout cleanly for standard landscape layout print */
+  #certificate-print-area {
+    visibility: visible;
+    border: 8px double #501537 !important;
+    width: 100%;
+    max-width: 100% !important;
+    height: auto;
+    page-break-inside: avoid;
+    background-color: #fdfbf7 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 2.5rem !important;
+  }
+}
